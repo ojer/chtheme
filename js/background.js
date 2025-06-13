@@ -1,10 +1,6 @@
 const KEY_PREFIX = "182931340";
 const storageKey = (str) => `${KEY_PREFIX}_active_dark_${str}`;
-
-const canvas = document.createElement("canvas");
-canvas.setAttribute("width", "32");
-canvas.setAttribute("height", "32");
-const ctx = canvas.getContext("2d");
+const iconImageData = { light: {}, dark: {} };
 
 const debugEnable = 1;
 const debug = (...par) => {
@@ -13,75 +9,29 @@ const debug = (...par) => {
   }
 };
 
-const getCurrentThemeInfo = async () => {
-  const themeInfo = await browser.theme.getCurrent();
-  debug("theme-color:", themeInfo);
-  if (themeInfo.colors) {
-    debug(JSON.stringify(themeInfo.colors));
-    return {
-      ...themeInfo.colors,
-    };
-  } else {
-    return {};
-  }
-};
-
-const colorView = (colors) => {
-  const mainDiv = document.createElement("div");
-  let frame = "#fff";
-  const colorGroup = Object.keys(colors).reduce((acc, cur) => {
-    const groupName = cur.substring(0, 1);
-    const group = acc[groupName] ?? [];
-    return {
-      ...acc,
-      [groupName]: [...group, [cur, colors[cur] ?? ""]],
-    };
-  }, {});
-
-  Object.keys(colorGroup).forEach((name) => {
-    const parent = document.createElement("div");
-    parent.setAttribute("style", "display: flex; flex-wrap: wrap;");
-    const colors = colorGroup[name];
-    colors.forEach(([key, color]) => {
-      if (key === "frame") {
-        frame = color ?? "#fff";
-      }
-      const div = document.createElement("div");
-      div.setAttribute(
-        "style",
-        `height: 88px;
-         flex: 0 0 64px;
-         display: flex;
-  			 align-items: end;
-         margin: 15px;
-         border: solid 1px #fff;
-         background: ${color}`,
-      );
-
-      const div2 = document.createElement("div");
-      div2.setAttribute(
-        "style",
-        `height: 24px; 
-         word-wrap: break-word;
-         background: #fff;
-         color: #000;
-         width: 100%;
-  			 text-align: center;
-         `,
-      );
-
-      div2.innerText = key;
-      div.appendChild(div2);
-      parent.appendChild(div);
-    });
-    mainDiv.appendChild(parent);
+const setAction = async (enable) => {
+  const bronColor = "#fff";
+  const backColor = "#000";
+  browser.browserAction.setBadgeText({
+    text: enable ? "夜" : "昼",
   });
-  mainDiv.setAttribute("style", `background: ${frame}`);
-  document.body.innerHTML = "";
-  document.body.appendChild(mainDiv);
+  browser.browserAction.setBadgeTextColor({
+    color: enable ? bronColor : backColor,
+  });
+  browser.browserAction.setBadgeBackgroundColor({
+    color: enable ? backColor : bronColor,
+  });
+
+  browser.browserAction.setIcon({
+    imageData: iconImageData[enable ? "dark" : "light"],
+  });
 };
 
 const genIcon = (counterclockwise) => {
+  const canvas = document.createElement("canvas");
+  canvas.setAttribute("width", "32");
+  canvas.setAttribute("height", "32");
+  const ctx = canvas.getContext("2d");
   const x = 16;
   const y = 16;
   const radius = 14.5;
@@ -107,29 +57,15 @@ const genIcon = (counterclockwise) => {
     ctx.fill();
   }
 
-  return ctx.getImageData(0, 0, 32, 32);
-};
-
-const setAction = async (enable) => {
-  const themeColors = await getCurrentThemeInfo();
-  const bronColor = "#fff";
-  const backColor = "#000";
-  browser.browserAction.setBadgeText({
-    text: enable ? "夜" : "昼",
-  });
-  browser.browserAction.setBadgeTextColor({
-    color: enable ? bronColor : backColor,
-  });
-  browser.browserAction.setBadgeBackgroundColor({
-    color: enable ? backColor : bronColor,
-  });
-
-  browser.browserAction.setIcon({
-    imageData: genIcon(enable),
-  });
+  const imageData = ctx.getImageData(0, 0, 32, 32);
+  canvas.remove();
+  return imageData;
 };
 
 const main = async () => {
+  iconImageData.light = genIcon(false);
+  iconImageData.dark = genIcon(true);
+
   const handleClicked = async (activeInfo) => {
     debug(activeInfo);
     const { active, url } = activeInfo;
