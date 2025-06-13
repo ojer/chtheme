@@ -1,9 +1,27 @@
-# toggle color scheme
+# li4ark
 
-切换 '亮/暗' 颜色方案
+> 切换配色方案
 
-安装之后 点击工具栏图标切换当前页面颜色方案
+使用工具栏按钮在 '亮色/暗色' 颜色方案之间切换
 
-将以该标签页 host 为 key 记录下为该 host 所设置的颜色方案
+当切换至其中一种颜色方案时
 
-当新标签页 host 存在记录中时, 将根据记录自动切换颜色方案
+- 操作系统会对用户界面进行调整
+- 记录为该网址所设置的颜色方案
+
+当打开新标签页时
+
+- 根据记录切换为上次设置的颜色方案
+
+toggle color scheme
+
+Use the toolbar buttons to switch between 'light/dark' color schemes
+
+When switching to one of the color schemes
+
+- The operating system will adjust the user interface
+- Record the color scheme set for this website
+
+When opening a new tab
+
+- Switch to the last set color scheme based on records

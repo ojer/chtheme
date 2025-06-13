@@ -27,37 +27,49 @@ const setAction = async (enable) => {
   });
 };
 
-const genIcon = (counterclockwise) => {
+const genIcon = (counterclockwise, size = 32) => {
   const canvas = document.createElement("canvas");
-  canvas.setAttribute("width", "32");
-  canvas.setAttribute("height", "32");
+  canvas.setAttribute("width", String(size));
+  canvas.setAttribute("height", String(size));
   const ctx = canvas.getContext("2d");
-  const x = 16;
-  const y = 16;
-  const radius = 14.5;
+  const x = size / 2;
+  const y = size / 2;
   ctx.reset();
-  {
-    ctx.beginPath();
-    const startAngle = 0;
-    const endAngle = Math.PI + Math.PI;
-    ctx.arc(x, y, radius, startAngle, endAngle);
-    ctx.fillStyle = "#fff";
-    ctx.fill();
-    ctx.lineWidth = 3;
-    ctx.strokeStyle = "#000";
-    ctx.stroke();
-  }
-
-  {
-    ctx.beginPath();
-    const startAngle = Math.PI + Math.PI / 2;
-    const endAngle = Math.PI - Math.PI / 2;
-    ctx.arc(x, y, radius, startAngle, endAngle, !counterclockwise);
-    ctx.fillStyle = "#000";
-    ctx.fill();
-  }
-
-  const imageData = ctx.getImageData(0, 0, 32, 32);
+  // 外圈
+  const lineWidth = size / 8 / 4;
+  let startAngle = 0;
+  let endAngle = Math.PI + Math.PI;
+  ctx.beginPath();
+  ctx.arc(x, y, size / 2 - lineWidth / 2, startAngle, endAngle);
+  ctx.lineWidth = lineWidth;
+  ctx.strokeStyle = "#fff";
+  ctx.stroke();
+  // 内圈
+  size -= lineWidth * 2;
+  const lineWidth2 = lineWidth * 1.5;
+  ctx.beginPath();
+  endAngle = Math.PI + Math.PI;
+  ctx.arc(x, y, size / 2 - lineWidth2 / 2, startAngle, endAngle);
+  ctx.fillStyle = "#fff";
+  ctx.fill();
+  ctx.lineWidth = lineWidth2;
+  ctx.strokeStyle = "#000";
+  ctx.stroke();
+  // 半边
+  ctx.beginPath();
+  startAngle = Math.PI + Math.PI / 2;
+  endAngle = Math.PI - Math.PI / 2;
+  ctx.arc(
+    x,
+    y,
+    size / 2 - lineWidth2 / 2,
+    startAngle,
+    endAngle,
+    !counterclockwise,
+  );
+  ctx.fillStyle = "#000";
+  ctx.fill();
+  const imageData = ctx.getImageData(0, 0, size, size);
   canvas.remove();
   return imageData;
 };
