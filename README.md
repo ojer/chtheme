@@ -1,3 +1,9 @@
 # toggle color scheme
 
-toggle light/dark color scheme simulation for the page
+切换 '亮/暗' 颜色方案
+
+安装之后 点击工具栏图标切换当前页面颜色方案
+
+将以该标签页 host 为 key 记录下为该 host 所设置的颜色方案
+
+当新标签页 host 存在记录中时, 将根据记录自动切换颜色方案
