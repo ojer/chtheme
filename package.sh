@@ -1,1 +1,1 @@
-zip -r -FS ./dist/chtheme.zip * --exclude 'img/icon.png' '*.git*' '*.sh' 'dist/'
+zip -r -FS ./dist/chtheme.zip * --exclude '*.git*' '*.sh' 'dist/' 'public/'
