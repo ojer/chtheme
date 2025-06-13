@@ -1,0 +1,30 @@
+{
+  "manifest_version": 2,
+  "name": "toggle color scheme",
+  "version": "1.0.0",
+
+  "description": "toggle light/dark color scheme simulation for the page",
+  "homepage_url": "https://github.com/mdn/webextensions-examples/tree/main/beastify",
+  "icons": {
+    "16": "img/icon.svg"
+  },
+
+  "permissions": [
+    "activeTab",
+    "browserSettings",
+    "storage",
+    "tabs",
+    "theme",
+    "unlimitedStorage"
+  ],
+
+  "browser_action": {
+    "default_icon": "img/icon.svg",
+    "browser_style": true,
+    "default_title": "toggle color scheme"
+  },
+
+  "background": {
+    "scripts": ["js/background.js"]
+  }
+}
